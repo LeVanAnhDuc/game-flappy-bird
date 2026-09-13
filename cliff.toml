@@ -18,8 +18,8 @@
 # template rather than from the commit rule.
 #
 # Preview locally, no push needed:
-#   npx git-cliff --bumped-version          -> the next version
-#   npx git-cliff --unreleased --tag vX.Y.Z -> what the notes will say
+#   pnpm dlx git-cliff --bumped-version          -> the next version
+#   pnpm dlx git-cliff --unreleased --tag vX.Y.Z -> what the notes will say
 
 [bump]
 # feat always bumps minor, even while below 1.0.

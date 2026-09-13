@@ -22,36 +22,38 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: yarn
+          cache: pnpm
 
-      - run: yarn install --frozen-lockfile
-      - run: yarn lint
-      - run: yarn typecheck
-      - run: yarn test
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
 
       # Build o day chu khong chi trong deploy: mot loi build chi lo ra luc deploy
       # la mot loi lo ra sau khi da merge.
-      - run: yarn build
+      - run: pnpm build
 
   e2e:
     name: Browser tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: yarn
+          cache: pnpm
 
-      - run: yarn install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile
 
-      # Khong can `yarn build` truoc: playwright.config.ts tu khoi `next dev`
+      # Khong can `pnpm build` truoc: playwright.config.ts tu khoi `next dev`
       # qua webServer.
-      - run: yarn playwright install --with-deps chromium
-      - run: yarn test:e2e
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
 
       - uses: actions/upload-artifact@v4
         if: failure()

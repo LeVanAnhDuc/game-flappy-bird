@@ -19,24 +19,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: yarn
-      - run: yarn install --frozen-lockfile
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
 
       # Lint chay o day chu khong chi trong ci.yml: `build` bat duoc loi kieu
       # nhung khong bat vi pham lint, va mot push thang vao `main` khong di
       # qua pull request.
-      - run: yarn lint
-      - run: yarn test
+      - run: pnpm lint
+      - run: pnpm test
 
       # The unit tests never touch the DOM, so the browser suite is what
       # actually stops a broken interface from shipping.
-      - run: yarn playwright install --with-deps chromium
-      - run: yarn test:e2e
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:e2e
 
-      - run: yarn build
+      - run: pnpm build
         env:
           GITHUB_PAGES: "true"
 

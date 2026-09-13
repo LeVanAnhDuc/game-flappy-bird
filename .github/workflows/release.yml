@@ -6,8 +6,8 @@
 # because the work did not go through a PR.
 #
 # The version rules live in `cliff.toml`, not here. Preview locally:
-#   npm run release:next     -> the next version
-#   npm run release:notes    -> what the notes will say
+#   pnpm release:next     -> the next version
+#   pnpm release:notes    -> what the notes will say
 name: Release
 
 on:
@@ -38,6 +38,10 @@ jobs:
           # first commit instead.
           fetch-depth: 0
 
+      # Only here to provide `pnpm dlx`. The version comes from `packageManager`
+      # in package.json, so this job and the local command run the same git-cliff.
+      - uses: pnpm/action-setup@v4
+
       - name: Work out the version
         id: v
         run: |
@@ -62,7 +66,7 @@ jobs:
             *"[release minor]"*) force="--bump minor" ;;
           esac
 
-          next=$(npx --yes "git-cliff@${GIT_CLIFF_VERSION}" --bumped-version $force)
+          next=$(pnpm dlx "git-cliff@${GIT_CLIFF_VERSION}" --bumped-version $force)
 
           # git-cliff reprints the current version when there is nothing to bump.
           if [ "$next" = "$latest" ]; then
@@ -83,7 +87,7 @@ jobs:
           LATEST: ${{ steps.v.outputs.latest }}
         run: |
           set -euo pipefail
-          npx --yes "git-cliff@${GIT_CLIFF_VERSION}" --unreleased --tag "$NEXT" --strip all > NOTES.md
+          pnpm dlx "git-cliff@${GIT_CLIFF_VERSION}" --unreleased --tag "$NEXT" --strip all > NOTES.md
 
           # The compare link is assembled here rather than in the template: this is
           # the place that knows GITHUB_REPOSITORY, and cliff.toml should not have to.

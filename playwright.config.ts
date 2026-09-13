@@ -24,7 +24,7 @@ export default defineConfig({
     }
   ],
   webServer: {
-    command: `yarn next dev --port ${PORT}`,
+    command: `pnpm exec next dev --port ${PORT}`,
     url: BASE_URL,
     reuseExistingServer: !process.env.CI,
     timeout: 120_000

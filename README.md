@@ -74,19 +74,19 @@ No server, no sign-in: your records stay on your own device.
 
 ```bash
 # Install dependencies
-yarn install
+pnpm install
 
 # Start the development server (http://localhost:3000)
-yarn dev
+pnpm dev
 
 # Run the unit tests (Vitest)
-yarn test
+pnpm test
 
 # Run the browser tests (Playwright)
-yarn test:e2e
+pnpm test:e2e
 
 # Build a static site (output: out/)
-yarn build
+pnpm build
 ```
 
 ## How it is put together
