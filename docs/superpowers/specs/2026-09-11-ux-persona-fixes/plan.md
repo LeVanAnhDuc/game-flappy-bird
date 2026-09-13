@@ -51,9 +51,9 @@ TDD từng task: viết test đỏ trước, rồi mới sửa code.
 
 ## Task 8 — Kiểm toàn bộ
 
-- [x] `yarn test` xanh
-- [x] `yarn typecheck` xanh
-- [x] `yarn lint:js` xanh
-- [x] `yarn test:e2e` xanh (desktop + Pixel 7)
+- [x] `pnpm test` xanh
+- [x] `pnpm typecheck` xanh
+- [x] `pnpm lint:js` xanh
+- [x] `pnpm test:e2e` xanh (desktop + Pixel 7)
 - [x] Ảnh thật ở 375 / 768 / 1024 / 1440
 - [x] README `## Features` nếu có thay đổi hành vi người dùng thấy được
