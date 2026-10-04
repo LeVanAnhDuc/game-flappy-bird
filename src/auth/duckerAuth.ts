@@ -15,7 +15,8 @@ export function isSafeReturnTo(value: unknown): value is string {
   return (
     typeof value === "string" &&
     value.startsWith("/") &&
-    !value.startsWith("//")
+    !value.startsWith("//") &&
+    !value.includes("\\")
   );
 }
 

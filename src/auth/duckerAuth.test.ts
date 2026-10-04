@@ -99,6 +99,7 @@ describe("isSafeReturnTo", () => {
     ["/", true],
     ["/?a=1", true],
     ["//evil.com", false],
+    ["/\\evil", false],
     ["https://evil.com", false],
     ["", false],
     [undefined, false],

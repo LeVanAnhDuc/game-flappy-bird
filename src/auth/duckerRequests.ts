@@ -31,6 +31,22 @@ export async function exchangeCode(
   return { accessToken: data.access_token };
 }
 
+const optionalString = (value: unknown): boolean =>
+  value === undefined || value === null || typeof value === "string";
+
+function isProfile(data: unknown): data is DuckerProfile {
+  if (typeof data !== "object" || data === null) return false;
+  const p = data as Record<string, unknown>;
+  return (
+    typeof p.sub === "string" &&
+    p.sub.length > 0 &&
+    optionalString(p.name) &&
+    optionalString(p.email) &&
+    optionalString(p.picture) &&
+    (p.email_verified === undefined || typeof p.email_verified === "boolean")
+  );
+}
+
 export async function fetchProfile(
   config: DuckerConfig,
   accessToken: string
@@ -40,5 +56,7 @@ export async function fetchProfile(
     signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS)
   });
   if (!response.ok) throw new Error(`userinfo_failed_${response.status}`);
-  return (await response.json()) as DuckerProfile;
+  const data: unknown = await response.json();
+  if (!isProfile(data)) throw new Error("userinfo_invalid");
+  return data;
 }
