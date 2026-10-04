@@ -153,38 +153,99 @@ test("ArrowUp inside the open account menu does not start the game", async ({
   await expect(page.getByTestId("menu-overlay")).toBeVisible();
 });
 
+type Page = import("@playwright/test").Page;
+
+/** Đo header: không tràn ngang, wordmark một dòng, nút >=44x44, không chồng nhau. */
+const assertHeaderFits = async (page: Page, width: number, label: string) => {
+  const m = await page.evaluate(() => {
+    const rect = (el: Element) => {
+      const r = el.getBoundingClientRect();
+      return { x: r.x, y: r.y, w: r.width, h: r.height };
+    };
+    const header = document.querySelector("header")!;
+    return {
+      scrollWidth: document.documentElement.scrollWidth,
+      innerWidth: window.innerWidth,
+      wordmark: rect(header.querySelector("span")!),
+      buttons: Array.from(header.querySelectorAll("button")).map(rect),
+      pill: rect(
+        document.querySelector("[data-testid=best-score]")!.parentElement!
+      )
+    };
+  });
+  test.info().annotations.push({
+    type: `${label}@${width}`,
+    description: JSON.stringify({
+      scrollWidth: m.scrollWidth,
+      wordmarkH: Math.round(m.wordmark.h),
+      buttons: m.buttons.map((b) => `${Math.round(b.w)}x${Math.round(b.h)}`),
+      pill: `${Math.round(m.pill.w)}x${Math.round(m.pill.h)}`
+    })
+  });
+  expect(m.scrollWidth).toBeLessThanOrEqual(m.innerWidth);
+  expect(m.wordmark.h).toBeLessThan(28);
+  const boxes = [...m.buttons, m.pill, m.wordmark];
+  for (const b of m.buttons) {
+    expect(b.w).toBeGreaterThanOrEqual(44);
+    expect(b.h).toBeGreaterThanOrEqual(44);
+  }
+  for (let a = 0; a < boxes.length; a++) {
+    for (let c = a + 1; c < boxes.length; c++) {
+      const p = boxes[a];
+      const q = boxes[c];
+      const overlap =
+        p.x < q.x + q.w - 0.5 &&
+        q.x < p.x + p.w - 0.5 &&
+        p.y < q.y + q.h - 0.5 &&
+        q.y < p.y + p.h - 0.5;
+      expect(overlap, `boxes ${a} and ${c} overlap`).toBe(false);
+    }
+  }
+};
+
 for (const width of [320, 375]) {
-  test(`${width}px: header does not wrap, targets stay >=44, menu stays on screen`, async ({
-    page
+  test(`${width}px: header fits in idle, signed-out and signed-in; menu stays on screen`, async ({
+    page,
+    browser,
+    baseURL
   }) => {
+    // idle = HTML của server, chưa chạy JS: nút tồn tại nhưng bị khóa.
+    const noJs = await browser.newContext({
+      javaScriptEnabled: false,
+      viewport: { width, height: 700 }
+    });
+    const idlePage = await noJs.newPage();
+    await idlePage.goto(`${baseURL}/`);
+    await expect(idlePage.getByTestId("btn-ducker-sign-in")).toBeDisabled();
+    await assertHeaderFits(idlePage, width, "idle");
+    await noJs.close();
+
     await page.setViewportSize({ width, height: 700 });
     await gotoGame(page);
-    const header = page.locator("header");
-    const pill = page
-      .getByTestId("best-score")
-      .locator("xpath=ancestor::span[1]");
-    const sound = page.getByTestId("btn-sound");
-    const heightBefore = (await header.boundingBox())!.height;
-    expect(heightBefore).toBe(56);
-    for (const box of [await pill.boundingBox(), await sound.boundingBox()]) {
-      expect(box!.height).toBeGreaterThanOrEqual(44);
-    }
-    expect((await sound.boundingBox())!.width).toBeGreaterThanOrEqual(44);
+    await expect(page.getByRole("button", { name: "Đăng nhập" })).toBeEnabled();
+    await assertHeaderFits(page, width, "signed-out");
+
     await page.getByRole("button", { name: "Đăng nhập" }).click();
     const trigger = page.getByRole("button", { name: "Tài khoản Ducker ID" });
     await expect(trigger).toBeVisible();
+    await assertHeaderFits(page, width, "signed-in");
     const container = trigger.locator("xpath=..");
     const before = await container.boundingBox();
     await trigger.click();
     const menu = page.getByTestId("ducker-account-menu");
     await expect(menu).toBeVisible();
-    const m = (await menu.boundingBox())!;
-    expect(m.x).toBeGreaterThanOrEqual(0);
-    expect(m.x + m.width).toBeLessThanOrEqual(width);
+    const box = (await menu.boundingBox())!;
+    test.info().annotations.push({
+      type: `menu@${width}`,
+      description: JSON.stringify(box)
+    });
+    expect(box.x).toBeGreaterThanOrEqual(0);
+    expect(box.x + box.width).toBeLessThanOrEqual(width);
+    expect(box.y).toBeGreaterThanOrEqual(0);
+    expect(box.y + box.height).toBeLessThanOrEqual(700);
     expect(await menu.evaluate((el) => getComputedStyle(el).position)).toBe(
       "absolute"
     );
     expect(await container.boundingBox()).toEqual(before);
-    expect((await header.boundingBox())!.height).toBe(56);
   });
 }

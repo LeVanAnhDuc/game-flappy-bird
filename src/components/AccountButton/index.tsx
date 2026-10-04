@@ -1,6 +1,7 @@
 "use client";
 
 // libs
+import { LogIn } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 // types
@@ -51,9 +52,13 @@ const AccountButton = (): ReactElement | null => {
         onClick={auth.signIn}
         disabled={loading || idle}
         aria-busy={loading}
-        className={`flex h-11 flex-none items-center justify-center rounded-full bg-white/[0.06] px-3 text-[15px] font-semibold text-[#EAF6FB] transition-colors hover:bg-white/[0.12] active:bg-white/[0.18] disabled:cursor-wait disabled:opacity-70 motion-reduce:transition-none ${FOCUS_RING}`}
+        className={`flex size-11 flex-none items-center justify-center rounded-full bg-white/[0.06] text-[15px] font-semibold text-[#EAF6FB] transition-colors hover:bg-white/[0.12] active:bg-white/[0.18] disabled:cursor-wait disabled:opacity-70 motion-reduce:transition-none min-[420px]:w-auto min-[420px]:px-3 ${FOCUS_RING}`}
       >
-        {loading ? "Đang đăng nhập…" : "Đăng nhập"}
+        <LogIn className="size-5 min-[420px]:hidden" aria-hidden="true" />
+        {/* Dưới 420px chỉ còn icon; tên truy cập vẫn là chữ này. */}
+        <span className="sr-only min-[420px]:not-sr-only">
+          {loading ? "Đang đăng nhập…" : "Đăng nhập"}
+        </span>
       </button>
     );
   }

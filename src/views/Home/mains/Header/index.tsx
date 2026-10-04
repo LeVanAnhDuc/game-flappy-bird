@@ -4,6 +4,15 @@ import { Trophy, Volume2, VolumeX } from "lucide-react";
 // components
 import AccountButton from "@/components/AccountButton";
 
+// others
+import { DUCKER_CONFIG } from "@/auth/config";
+
+/** Cờ đăng nhập tắt thì class/DOM của header y hệt bản deploy cũ: các class thêm chỉ áp khi bật. */
+const ON = DUCKER_CONFIG !== null;
+const WORDMARK_ON = ON ? " whitespace-nowrap" : "";
+const PILL_ON = ON ? " min-h-11 flex-none" : "";
+const SOUND_ON = ON ? " flex-none" : "";
+
 /**
  * Thanh tiêu đề cao cố định 56px. Dữ liệu game nhận qua props, không gọi
  * useGameEngine (toàn app chỉ có một lời gọi, nằm ở GameStage). Ngoại lệ duy
@@ -27,7 +36,9 @@ const Header = ({
   soundTestId?: string;
 }) => (
   <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-white/[0.07] bg-[#081C29] pl-4 pr-2">
-    <span className="text-[15px] font-semibold tracking-tight text-[#EAF6FB]">
+    <span
+      className={`text-[15px] font-semibold tracking-tight text-[#EAF6FB]${WORDMARK_ON}`}
+    >
       Duck Flap
     </span>
 
@@ -37,7 +48,9 @@ const Header = ({
         nên người nhìn bằng mắt chỉ thấy cúp + một con số trần, và đã có
         người đọc nhầm nó thành điểm của lượt đang chơi.
       */}
-      <span className="flex min-h-11 flex-none items-center gap-1.5 rounded-full bg-white/[0.06] px-3 py-1.5 text-[15px] font-semibold text-[#FFD866]">
+      <span
+        className={`flex items-center gap-1.5 rounded-full bg-white/[0.06] px-3 py-1.5 text-[15px] font-semibold text-[#FFD866]${PILL_ON}`}
+      >
         <Trophy className="size-4" aria-hidden="true" />
         <span data-testid="best-score-label" className="font-medium">
           Kỷ lục
@@ -57,7 +70,7 @@ const Header = ({
         aria-pressed={soundEnabled}
         aria-label={soundEnabled ? "Tắt âm thanh" : "Bật âm thanh"}
         title={soundEnabled ? "Tắt âm thanh" : "Bật âm thanh"}
-        className="flex size-11 flex-none items-center justify-center rounded-full text-[#8FB3C4] transition-colors hover:bg-white/[0.08] hover:text-[#EAF6FB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFD866] focus-visible:ring-offset-2 focus-visible:ring-offset-[#081C29] active:bg-white/[0.14]"
+        className={`flex size-11 items-center justify-center rounded-full text-[#8FB3C4] transition-colors hover:bg-white/[0.08] hover:text-[#EAF6FB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFD866] focus-visible:ring-offset-2 focus-visible:ring-offset-[#081C29] active:bg-white/[0.14]${SOUND_ON}`}
       >
         {soundEnabled ? (
           <Volume2 className="size-5" aria-hidden="true" />
