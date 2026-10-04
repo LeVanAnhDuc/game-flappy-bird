@@ -5,7 +5,7 @@
 
 A Flappy Bird clone built with Next.js and Canvas 2D. Every sprite, every sound
 effect is generated at runtime — the project ships no image or audio file at all.
-No server, no sign-in: your records stay on your own device.
+No server and no game accounts: your records stay on your own device.
 
 **Play**: https://levananhduc.github.io/web-game-duck-flap/
 
@@ -57,9 +57,17 @@ No server, no sign-in: your records stay on your own device.
   - The bird's wing beat is derived from its vertical speed: fast strokes climbing, an outstretched glide falling
   - Every colour lives in one palette file, so re-skinning the game touches nothing else
 
-- **No sign-in, no server**
+- **No game accounts, no server**
   - Records and settings live in localStorage on your own device
+  - Optional sign-in with Ducker ID (behind a feature flag, off in the deployed build): identity only, nothing is synced
   - Blocked storage (private windows) or corrupted data degrades to defaults instead of crashing
+
+## Optional Ducker ID sign-in (local only)
+
+Copy `.env.example` to `.env` and fill in `NEXT_PUBLIC_DUCKER_CLIENT_ID`. The button
+only renders when `NEXT_PUBLIC_FEATURE_DUCKER_SIGN_IN=true` and all four
+`NEXT_PUBLIC_DUCKER_*` values are set; the deploy workflow passes none of them.
+`NEXT_PUBLIC_BASE_PATH` replaces the old `GITHUB_PAGES` switch.
 
 ## Controls
 
@@ -76,7 +84,7 @@ No server, no sign-in: your records stay on your own device.
 # Install dependencies
 pnpm install
 
-# Start the development server (http://localhost:3000)
+# Start the development server (http://localhost:3000; use --port if Ducker ID holds 3000)
 pnpm dev
 
 # Run the unit tests (Vitest)
@@ -95,7 +103,7 @@ pnpm build
 - **Rendering**: Canvas 2D, drawn procedurally — no sprite sheet, no asset files
 - **Styling**: Tailwind CSS v3, lucide-react icons
 - **Audio**: WebAudio API (oscillator + gain envelope)
-- **Testing**: Vitest (78 unit tests) + Playwright (17 end-to-end tests, Desktop Chrome and Pixel 7)
+- **Testing**: Vitest + Playwright (Desktop Chrome and Pixel 7)
 - **Build & Deploy**: static export, deployed to GitHub Pages by GitHub Actions
 
 ## Project structure

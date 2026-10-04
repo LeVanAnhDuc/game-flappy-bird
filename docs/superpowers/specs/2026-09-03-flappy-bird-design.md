@@ -112,4 +112,6 @@ mức Khó.
 
 Không state manager (engine tự giữ state), không entity-component-system
 (game có đúng hai loại vật thể), không tầng abstraction cho renderer, không
-leaderboard online, không tài khoản người dùng, không sprite sheet.
+leaderboard online, không tài khoản do game sở hữu (từ 2026-10-04 có đăng nhập Ducker ID tùy chọn, chỉ
+định danh, không backend, không đồng bộ — xem `docs/decisions/0001-ducker-id-sign-in.md`),
+không sprite sheet.

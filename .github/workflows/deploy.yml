@@ -39,7 +39,9 @@ jobs:
 
       - run: pnpm build
         env:
-          GITHUB_PAGES: "true"
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+          # Ducker ID sign-in is shipped dark: the flag and DUCKER_* vars are
+          # deliberately not passed (docs/decisions/0001-ducker-id-sign-in.md).
 
       # Next puts every asset under _next/, and anything starting with an
       # underscore is invisible to Jekyll.

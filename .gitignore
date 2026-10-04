@@ -22,6 +22,10 @@ npm-debug.log*
 
 # env files (can opt-in for commiting if needed)
 .env*
+!.env.example
+
+# git worktrees
+/.worktrees/
 
 # vercel
 .vercel
