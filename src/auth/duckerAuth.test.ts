@@ -151,6 +151,19 @@ describe("settleCallbackUrl", () => {
     expect(window.location.search).toBe("?level=2");
   });
 
+  it("is one-shot: a second call is a no-op even if the URL changed", () => {
+    sessionStorage.setItem(
+      "ducker.pkce",
+      JSON.stringify({ state: "s1", verifier: "v1", returnTo: "/?level=2" })
+    );
+    window.history.replaceState(null, "", "/?code=c1&state=s1");
+    captureCallback();
+    settleCallbackUrl();
+    window.history.replaceState(null, "", "/?level=9");
+    settleCallbackUrl();
+    expect(window.location.search).toBe("?level=9");
+  });
+
   it("is a no-op when there was no callback", () => {
     window.history.replaceState(null, "", "/?level=2");
     captureCallback();
@@ -211,6 +224,18 @@ describe("startLogin", () => {
     await startLogin(config);
     expect(assign).not.toHaveBeenCalled();
     vi.stubGlobal("sessionStorage", real);
+    await startLogin(config);
+    expect(assign).toHaveBeenCalledTimes(1);
+  });
+
+  it("removes the pending entry when the start fails after writing it", async () => {
+    const digest = vi
+      .spyOn(crypto.subtle, "digest")
+      .mockRejectedValueOnce(new Error("boom"));
+    await expect(startLogin(config)).rejects.toThrow("boom");
+    digest.mockRestore();
+    expect(sessionStorage.getItem("ducker.pkce")).toBeNull();
+    expect(assign).not.toHaveBeenCalled();
     await startLogin(config);
     expect(assign).toHaveBeenCalledTimes(1);
   });

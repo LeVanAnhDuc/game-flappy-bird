@@ -74,6 +74,7 @@ export async function startLogin(config: DuckerConfig): Promise<void> {
     url.searchParams.set("code_challenge_method", "S256");
     window.location.assign(url.toString());
   } catch (error) {
+    clearPending();
     starting = false;
     throw error;
   }
@@ -139,9 +140,12 @@ export function captureCallback(): void {
  * history. Gọi sau mount để trả URL về bản đã dọn — F5 sẽ không đem đổi code đã dùng.
  */
 export function settleCallbackUrl(): void {
-  if (settledUrl === null || currentUrl() === settledUrl) return;
+  if (settledUrl === null) return;
+  const target = settledUrl;
+  settledUrl = null; // một lần duy nhất: remount sau này không được ghi URL cũ
+  if (currentUrl() === target) return;
   try {
-    window.history.replaceState(window.history.state, "", settledUrl);
+    window.history.replaceState(window.history.state, "", target);
   } catch {
     // giữ nguyên URL hiện tại
   }
