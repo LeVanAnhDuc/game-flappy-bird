@@ -6,6 +6,7 @@ import {
   consumeCallback,
   isSafeReturnTo,
   resetCaptureForTests,
+  settleCallbackUrl,
   startLogin
 } from "@/auth/duckerAuth";
 
@@ -129,6 +130,33 @@ describe("captureCallback", () => {
     captureCallback();
     expect(window.location.search).toBe("?other=1");
     expect(capturedCallback()?.code).toBe("c1");
+  });
+});
+
+describe("settleCallbackUrl", () => {
+  beforeEach(() => {
+    sessionStorage.clear();
+    resetCaptureForTests();
+  });
+
+  it("restores the clean URL when it was re-polluted after capture", () => {
+    sessionStorage.setItem(
+      "ducker.pkce",
+      JSON.stringify({ state: "s1", verifier: "v1", returnTo: "/?level=2" })
+    );
+    window.history.replaceState(null, "", "/?code=c1&state=s1");
+    captureCallback();
+    window.history.replaceState(null, "", "/?level=2&code=c1&state=s1");
+    settleCallbackUrl();
+    expect(window.location.search).toBe("?level=2");
+  });
+
+  it("is a no-op when there was no callback", () => {
+    window.history.replaceState(null, "", "/?level=2");
+    captureCallback();
+    window.history.replaceState(null, "", "/?level=5");
+    settleCallbackUrl();
+    expect(window.location.search).toBe("?level=5");
   });
 });
 

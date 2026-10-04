@@ -114,6 +114,10 @@ export function consumeCallback(): CallbackResult | null {
 
 let captured: CallbackResult | null = null;
 let didCapture = false;
+let settledUrl: string | null = null;
+
+const currentUrl = (): string =>
+  window.location.pathname + window.location.search + window.location.hash;
 
 /** Chạy một lần khi module nạp trên trình duyệt, trước mọi code game đọc URL. */
 export function captureCallback(): void {
@@ -127,6 +131,20 @@ export function captureCallback(): void {
       // URL không khôi phục được — giữ URL đã dọn
     }
   }
+  if (captured) settledUrl = currentUrl();
+}
+
+/**
+ * Sau hydrate, app router của Next ghi lại URL lúc hydrate (còn ?code&state) vào
+ * history. Gọi sau mount để trả URL về bản đã dọn — F5 sẽ không đem đổi code đã dùng.
+ */
+export function settleCallbackUrl(): void {
+  if (settledUrl === null || currentUrl() === settledUrl) return;
+  try {
+    window.history.replaceState(window.history.state, "", settledUrl);
+  } catch {
+    // giữ nguyên URL hiện tại
+  }
 }
 
 export function capturedCallback(): CallbackResult | null {
@@ -137,6 +155,7 @@ export function capturedCallback(): CallbackResult | null {
 export function resetCaptureForTests(): void {
   captured = null;
   didCapture = false;
+  settledUrl = null;
   starting = false;
 }
 

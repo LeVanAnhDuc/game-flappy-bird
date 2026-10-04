@@ -54,6 +54,9 @@ test("signs in, shows the account menu, keeps the URL clean, signs out", async (
   const account = page.getByRole("button", { name: "Tài khoản Ducker ID" });
   await expect(account).toBeVisible();
   expect(new URL(page.url()).search).not.toMatch(/code=|state=/);
+  // Sau hydrate Next có thể ghi lại URL cũ — đợi thêm rồi kiểm lại.
+  await page.waitForTimeout(500);
+  expect(new URL(page.url()).search).not.toMatch(/code=|state=/);
   await account.click();
   await expect(page.getByText("Lê Văn Anh Đức")).toBeVisible();
   await expect(
