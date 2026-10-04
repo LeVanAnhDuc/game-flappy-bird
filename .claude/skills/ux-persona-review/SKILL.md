@@ -9,7 +9,7 @@ description: Use when you want to know how a real stranger experiences Duck Flap
 
 - Thư mục: `D:/DeleteByDuc/web-game/web-game-duck-flap`
 - **Đích của mọi phiên: bản đã deploy** — <https://levananhduc.github.io/web-game-duck-flap/>
-  Đây là bản GitHub Actions dựng từ `main` với `GITHUB_PAGES=true`, tức **đúng thứ người
+  Đây là bản GitHub Actions dựng từ `main` với `NEXT_PUBLIC_BASE_PATH=/<tên-repo>`, tức **đúng thứ người
   chơi thật mở**. Persona không bao giờ chạm tới máy của bạn.
 - Bản chạy ở máy — **chỉ dùng khi cần soi một thay đổi chưa deploy**, và khi đó phải ghi
   rõ trong báo cáo là đã soi bản nào: `pnpm dev --port 3100` → <http://127.0.0.1:3100/>
