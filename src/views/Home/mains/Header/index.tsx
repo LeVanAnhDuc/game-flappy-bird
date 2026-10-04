@@ -1,10 +1,13 @@
 // libs
 import { Trophy, Volume2, VolumeX } from "lucide-react";
 
+// components
+import AccountButton from "@/components/AccountButton";
+
 /**
- * Thanh tiêu đề cao cố định 56px. Đây là component thuần: mọi dữ liệu
- * nhận qua props, không gọi useGameEngine (toàn app chỉ có một lời gọi,
- * nằm ở GameStage).
+ * Thanh tiêu đề cao cố định 56px. Dữ liệu game nhận qua props, không gọi
+ * useGameEngine (toàn app chỉ có một lời gọi, nằm ở GameStage). Ngoại lệ duy
+ * nhất là AccountButton, tự đọc store đăng nhập Ducker ID — không liên quan engine.
  */
 const Header = ({
   best,
@@ -43,6 +46,9 @@ const Header = ({
           {best}
         </span>
       </span>
+
+      {/* Đăng nhập Ducker ID: tự ẩn khi tính năng tắt, tự lấy trạng thái từ store. */}
+      <AccountButton />
 
       <button
         type="button"
