@@ -40,15 +40,17 @@ const AccountButton = (): ReactElement | null => {
 
   if (!signedIn || !auth.profile) {
     const loading = auth.status === "loading";
+    // idle = trước khi client khởi động (cũng là HTML của server): hiện nút nhưng chưa bấm được.
+    const idle = auth.status === "idle";
     return (
       <button
         ref={signInRef}
         type="button"
         data-testid="btn-ducker-sign-in"
         onClick={auth.signIn}
-        disabled={loading}
+        disabled={loading || idle}
         aria-busy={loading}
-        className={`flex h-11 items-center justify-center rounded-full bg-white/[0.06] px-3 text-[15px] font-semibold text-[#EAF6FB] transition-colors hover:bg-white/[0.12] active:bg-white/[0.18] disabled:cursor-wait disabled:opacity-70 ${FOCUS_RING}`}
+        className={`flex h-11 items-center justify-center rounded-full bg-white/[0.06] px-3 text-[15px] font-semibold text-[#EAF6FB] transition-colors hover:bg-white/[0.12] active:bg-white/[0.18] disabled:cursor-wait disabled:opacity-70 motion-reduce:transition-none ${FOCUS_RING}`}
       >
         {loading ? "Đang đăng nhập…" : "Đăng nhập"}
       </button>
@@ -69,13 +71,14 @@ const AccountButton = (): ReactElement | null => {
         aria-haspopup="menu"
         aria-expanded={menu.open}
         aria-label="Tài khoản Ducker ID"
-        className={`flex size-11 items-center justify-center rounded-full transition-colors hover:bg-white/[0.08] active:bg-white/[0.14] ${FOCUS_RING}`}
+        className={`flex size-11 items-center justify-center rounded-full transition-colors hover:bg-white/[0.08] active:bg-white/[0.14] motion-reduce:transition-none ${FOCUS_RING}`}
       >
         {profile.picture ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={profile.picture}
             alt=""
+            referrerPolicy="no-referrer"
             width={32}
             height={32}
             className="size-8 rounded-full object-cover"
@@ -115,7 +118,7 @@ const AccountButton = (): ReactElement | null => {
               target="_blank"
               rel="noopener noreferrer"
               onClick={() => menu.close(false)}
-              className={`flex h-11 items-center justify-center rounded-lg bg-[#FFD866] px-3 text-[15px] font-semibold text-[#06222F] transition-colors hover:bg-[#FFE49A] ${FOCUS_RING}`}
+              className={`flex h-11 items-center justify-center rounded-lg bg-[#FFD866] px-3 text-[15px] font-semibold text-[#06222F] transition-colors hover:bg-[#FFE49A] motion-reduce:transition-none ${FOCUS_RING}`}
             >
               Mở hồ sơ Ducker ID
             </a>
@@ -127,7 +130,7 @@ const AccountButton = (): ReactElement | null => {
                 menu.close(false);
                 auth.signOut();
               }}
-              className={`flex h-11 items-center justify-center rounded-lg px-3 text-[15px] font-medium text-[#C6DAE4] transition-colors hover:bg-white/[0.08] hover:text-[#EAF6FB] ${FOCUS_RING}`}
+              className={`flex h-11 items-center justify-center rounded-lg px-3 text-[15px] font-medium text-[#C6DAE4] transition-colors hover:bg-white/[0.08] hover:text-[#EAF6FB] motion-reduce:transition-none ${FOCUS_RING}`}
             >
               Đăng xuất
             </button>

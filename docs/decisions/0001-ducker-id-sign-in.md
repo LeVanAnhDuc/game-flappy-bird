@@ -33,7 +33,7 @@ Repo không có tài liệu NFR riêng; ràng buộc liên quan là spec gốc �
 và việc game chạy hoàn toàn offline. Ngoại lệ, đúng một câu:
 
 > sessionStorage khóa `ducker.pkce` duy nhất, xóa khi quay lại; mạng chỉ tới issuer đã
-> cấu hình, và tới URL ảnh đại diện mà nó trả về, chỉ sau khi đăng nhập; không gì cả
+> cấu hình, và tới URL ảnh đại diện mà nó trả về, chỉ sau khi người chơi bấm đăng nhập; không gì cả
 > khi cờ tắt.
 
 Ảnh đại diện (`<img src={profile.picture}>`) có thể ở host khác và không bị giới hạn.

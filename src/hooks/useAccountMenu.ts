@@ -22,6 +22,9 @@ export const useAccountMenu = () => {
       );
 
     const onKey = (event: KeyboardEvent) => {
+      // Game nghe keydown ở window (bubble): khi menu mở, mọi phím dừng ở đây
+      // để ArrowUp/Space/W không vỗ cánh và Esc/P không tạm dừng game phía sau.
+      event.stopPropagation();
       if (event.key === "Escape") {
         close(true);
         return;
@@ -69,13 +72,13 @@ export const useAccountMenu = () => {
 
     const menu = menuRef.current;
     const trigger = triggerRef.current;
-    document.addEventListener("keydown", onKey);
+    window.addEventListener("keydown", onKey, true);
     document.addEventListener("pointerdown", onPointer);
     menu?.addEventListener("focusout", onFocusOut);
     trigger?.addEventListener("focusout", onFocusOut);
     items()[0]?.focus();
     return () => {
-      document.removeEventListener("keydown", onKey);
+      window.removeEventListener("keydown", onKey, true);
       document.removeEventListener("pointerdown", onPointer);
       menu?.removeEventListener("focusout", onFocusOut);
       trigger?.removeEventListener("focusout", onFocusOut);

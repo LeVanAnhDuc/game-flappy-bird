@@ -13,11 +13,12 @@ export function readDuckerConfig(raw: DuckerEnv): DuckerConfig | null {
   if (!issuer || !clientId || !scope || !profilePath) return null;
   if (!/^https?:\/\//.test(issuer)) return null; // "localhost:3000" là URL hợp lệ với scheme "localhost:" — chặn
   try {
+    const origin = new URL(issuer).origin;
     return {
-      issuer: new URL(issuer).origin,
+      issuer: origin,
       clientId,
       scope,
-      profileUrl: new URL(profilePath, issuer).toString()
+      profileUrl: new URL(profilePath, origin).toString()
     };
   } catch {
     return null; // issuer sai định dạng → coi như chưa cấu hình, game vẫn chạy

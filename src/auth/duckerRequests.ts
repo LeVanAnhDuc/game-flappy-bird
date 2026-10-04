@@ -58,5 +58,10 @@ export async function fetchProfile(
   if (!response.ok) throw new Error(`userinfo_failed_${response.status}`);
   const data: unknown = await response.json();
   if (!isProfile(data)) throw new Error("userinfo_invalid");
-  return data;
+  return {
+    ...data,
+    name: data.name ?? undefined,
+    email: data.email ?? undefined,
+    picture: data.picture ?? undefined
+  };
 }

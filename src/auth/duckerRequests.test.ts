@@ -66,6 +66,16 @@ describe("duckerRequests", () => {
     await expect(fetchProfile(config, "at")).resolves.toEqual({ sub: "u1" });
   });
 
+  it("normalises null name/email/picture to undefined", async () => {
+    fetchMock.mockResolvedValue(
+      json({ sub: "u1", name: null, email: null, picture: null })
+    );
+    const profile = await fetchProfile(config, "at");
+    expect(profile.name).toBeUndefined();
+    expect(profile.email).toBeUndefined();
+    expect(profile.picture).toBeUndefined();
+  });
+
   it("throws on a non-ok response", async () => {
     fetchMock.mockResolvedValue(json({}, 400));
     await expect(exchangeCode(config, "c", "v")).rejects.toThrow(

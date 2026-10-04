@@ -136,3 +136,19 @@ test("375px: the sign-in button is >=44px and overlaps nothing", async ({
     expect(overlap).toBe(false);
   }
 });
+
+test("ArrowUp inside the open account menu does not start the game", async ({
+  page
+}) => {
+  await gotoGame(page);
+  await page.getByRole("button", { name: "Đăng nhập" }).click();
+  await page.getByRole("button", { name: "Tài khoản Ducker ID" }).click();
+  await expect(page.getByTestId("ducker-account-menu")).toBeVisible();
+  await page.keyboard.press("ArrowUp");
+  await page.keyboard.press("ArrowDown");
+  await expect(page.getByTestId("menu-overlay")).toBeVisible();
+  await expect(page.getByTestId("ready-overlay")).toHaveCount(0);
+  await page.keyboard.press("Escape");
+  await expect(page.getByTestId("ducker-account-menu")).toHaveCount(0);
+  await expect(page.getByTestId("menu-overlay")).toBeVisible();
+});

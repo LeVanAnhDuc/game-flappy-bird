@@ -69,6 +69,38 @@ describe("AccountButton", () => {
     expect(base.signIn).toHaveBeenCalledOnce();
   });
 
+  it("renders the sign-in button disabled while idle", () => {
+    auth.value = { ...base, status: "idle", profile: null };
+    render();
+    expect((byName("Đăng nhập") as HTMLButtonElement).disabled).toBe(true);
+  });
+
+  it("keeps menu keys away from a window keydown listener only while open", () => {
+    auth.value = { ...base, status: "signed-in", profile: person };
+    render();
+    const seen: string[] = [];
+    const game = (e: KeyboardEvent) => seen.push(e.key);
+    window.addEventListener("keydown", game);
+    const press = (k: string) =>
+      act(() => {
+        document.body.dispatchEvent(
+          new KeyboardEvent("keydown", { key: k, bubbles: true })
+        );
+      });
+    press("ArrowUp");
+    expect(seen).toEqual(["ArrowUp"]);
+    seen.length = 0;
+    const trigger = byName("Tài khoản Ducker ID")!;
+    click(trigger);
+    press("ArrowUp");
+    press("Escape");
+    expect(seen).toEqual([]);
+    expect(trigger.getAttribute("aria-expanded")).toBe("false");
+    press("ArrowUp");
+    expect(seen).toEqual(["ArrowUp"]);
+    window.removeEventListener("keydown", game);
+  });
+
   it("disables the button while signing in", () => {
     auth.value = { ...base, status: "loading", profile: null };
     render();
