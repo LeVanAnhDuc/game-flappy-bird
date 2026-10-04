@@ -152,3 +152,39 @@ test("ArrowUp inside the open account menu does not start the game", async ({
   await expect(page.getByTestId("ducker-account-menu")).toHaveCount(0);
   await expect(page.getByTestId("menu-overlay")).toBeVisible();
 });
+
+for (const width of [320, 375]) {
+  test(`${width}px: header does not wrap, targets stay >=44, menu stays on screen`, async ({
+    page
+  }) => {
+    await page.setViewportSize({ width, height: 700 });
+    await gotoGame(page);
+    const header = page.locator("header");
+    const pill = page
+      .getByTestId("best-score")
+      .locator("xpath=ancestor::span[1]");
+    const sound = page.getByTestId("btn-sound");
+    const heightBefore = (await header.boundingBox())!.height;
+    expect(heightBefore).toBe(56);
+    for (const box of [await pill.boundingBox(), await sound.boundingBox()]) {
+      expect(box!.height).toBeGreaterThanOrEqual(44);
+    }
+    expect((await sound.boundingBox())!.width).toBeGreaterThanOrEqual(44);
+    await page.getByRole("button", { name: "Đăng nhập" }).click();
+    const trigger = page.getByRole("button", { name: "Tài khoản Ducker ID" });
+    await expect(trigger).toBeVisible();
+    const container = trigger.locator("xpath=..");
+    const before = await container.boundingBox();
+    await trigger.click();
+    const menu = page.getByTestId("ducker-account-menu");
+    await expect(menu).toBeVisible();
+    const m = (await menu.boundingBox())!;
+    expect(m.x).toBeGreaterThanOrEqual(0);
+    expect(m.x + m.width).toBeLessThanOrEqual(width);
+    expect(await menu.evaluate((el) => getComputedStyle(el).position)).toBe(
+      "absolute"
+    );
+    expect(await container.boundingBox()).toEqual(before);
+    expect((await header.boundingBox())!.height).toBe(56);
+  });
+}

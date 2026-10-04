@@ -37,7 +37,7 @@ const Header = ({
         nên người nhìn bằng mắt chỉ thấy cúp + một con số trần, và đã có
         người đọc nhầm nó thành điểm của lượt đang chơi.
       */}
-      <span className="flex items-center gap-1.5 rounded-full bg-white/[0.06] px-3 py-1.5 text-[15px] font-semibold text-[#FFD866]">
+      <span className="flex min-h-11 flex-none items-center gap-1.5 rounded-full bg-white/[0.06] px-3 py-1.5 text-[15px] font-semibold text-[#FFD866]">
         <Trophy className="size-4" aria-hidden="true" />
         <span data-testid="best-score-label" className="font-medium">
           Kỷ lục
@@ -57,7 +57,7 @@ const Header = ({
         aria-pressed={soundEnabled}
         aria-label={soundEnabled ? "Tắt âm thanh" : "Bật âm thanh"}
         title={soundEnabled ? "Tắt âm thanh" : "Bật âm thanh"}
-        className="flex size-11 items-center justify-center rounded-full text-[#8FB3C4] transition-colors hover:bg-white/[0.08] hover:text-[#EAF6FB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFD866] focus-visible:ring-offset-2 focus-visible:ring-offset-[#081C29] active:bg-white/[0.14]"
+        className="flex size-11 flex-none items-center justify-center rounded-full text-[#8FB3C4] transition-colors hover:bg-white/[0.08] hover:text-[#EAF6FB] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FFD866] focus-visible:ring-offset-2 focus-visible:ring-offset-[#081C29] active:bg-white/[0.14]"
       >
         {soundEnabled ? (
           <Volume2 className="size-5" aria-hidden="true" />

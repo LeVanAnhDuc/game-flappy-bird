@@ -2,7 +2,7 @@
  * PKCE (RFC 7636) — thứ thay thế client_secret cho app chạy hoàn toàn trên
  * trình duyệt.
  *
- * Badminton là public client: không có backend, nên không có chỗ nào giữ được
+ * Game này là public client: không có backend, nên không có chỗ nào giữ được
  * bí mật dài hạn. `code_verifier` an toàn ở đây vì nó sinh mới mỗi lần đăng
  * nhập, sống vài giây, dùng một lần rồi vứt — lộ một verifier chỉ hỏng đúng
  * phiên đó, khác hẳn lộ một secret cố định.

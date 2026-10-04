@@ -1,7 +1,7 @@
 "use client";
 
 // libs
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 // types
 import type { ReactElement } from "react";
@@ -24,6 +24,7 @@ const AccountButton = (): ReactElement | null => {
   const menu = useAccountMenu();
   const signInRef = useRef<HTMLButtonElement>(null);
   const focusSignInNext = useRef(false);
+  const [pictureFailed, setPictureFailed] = useState(false);
 
   const signedIn = auth.status === "signed-in" && auth.profile !== null;
 
@@ -50,7 +51,7 @@ const AccountButton = (): ReactElement | null => {
         onClick={auth.signIn}
         disabled={loading || idle}
         aria-busy={loading}
-        className={`flex h-11 items-center justify-center rounded-full bg-white/[0.06] px-3 text-[15px] font-semibold text-[#EAF6FB] transition-colors hover:bg-white/[0.12] active:bg-white/[0.18] disabled:cursor-wait disabled:opacity-70 motion-reduce:transition-none ${FOCUS_RING}`}
+        className={`flex h-11 flex-none items-center justify-center rounded-full bg-white/[0.06] px-3 text-[15px] font-semibold text-[#EAF6FB] transition-colors hover:bg-white/[0.12] active:bg-white/[0.18] disabled:cursor-wait disabled:opacity-70 motion-reduce:transition-none ${FOCUS_RING}`}
       >
         {loading ? "Đang đăng nhập…" : "Đăng nhập"}
       </button>
@@ -62,7 +63,7 @@ const AccountButton = (): ReactElement | null => {
   const showEmail = Boolean(profile.email?.trim()) && title !== profile.email;
 
   return (
-    <div className="relative">
+    <div className="relative flex-none">
       <button
         ref={menu.triggerRef}
         type="button"
@@ -71,14 +72,15 @@ const AccountButton = (): ReactElement | null => {
         aria-haspopup="menu"
         aria-expanded={menu.open}
         aria-label="Tài khoản Ducker ID"
-        className={`flex size-11 items-center justify-center rounded-full transition-colors hover:bg-white/[0.08] active:bg-white/[0.14] motion-reduce:transition-none ${FOCUS_RING}`}
+        className={`flex size-11 flex-none items-center justify-center rounded-full transition-colors hover:bg-white/[0.08] active:bg-white/[0.14] motion-reduce:transition-none ${FOCUS_RING}`}
       >
-        {profile.picture ? (
+        {profile.picture && !pictureFailed ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={profile.picture}
             alt=""
             referrerPolicy="no-referrer"
+            onError={() => setPictureFailed(true)}
             width={32}
             height={32}
             className="size-8 rounded-full object-cover"
@@ -101,16 +103,18 @@ const AccountButton = (): ReactElement | null => {
           data-testid="ducker-account-menu"
           className="absolute right-0 top-full z-50 mt-2 w-64 max-w-[calc(100vw-1rem)] rounded-xl border border-white/10 bg-[#0A2130] p-3 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.6)]"
         >
-          {title && (
-            <p className="truncate text-[15px] font-semibold text-[#EAF6FB]">
-              {title}
-            </p>
-          )}
-          {showEmail && (
-            <p className="truncate text-[13px] text-[#C6DAE4]">
-              {profile.email}
-            </p>
-          )}
+          <div role="none">
+            {title && (
+              <p className="truncate text-[15px] font-semibold text-[#EAF6FB]">
+                {title}
+              </p>
+            )}
+            {showEmail && (
+              <p className="truncate text-[13px] text-[#C6DAE4]">
+                {profile.email}
+              </p>
+            )}
+          </div>
           <div className="mt-3 flex flex-col gap-2">
             <a
               role="menuitem"

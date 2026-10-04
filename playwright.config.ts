@@ -32,6 +32,6 @@ export default defineConfig({
     env: { NEXT_PUBLIC_FEATURE_DUCKER_SIGN_IN: "false" },
     url: BASE_URL,
     reuseExistingServer: false,
-    timeout: 120_000
+    timeout: 300_000
   }
 });

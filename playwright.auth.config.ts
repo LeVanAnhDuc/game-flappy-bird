@@ -25,7 +25,7 @@ export default defineConfig({
     command: `pnpm exec next dev --port ${PORT}`,
     url: BASE_URL,
     reuseExistingServer: false,
-    timeout: 120_000,
+    timeout: 300_000,
     env: {
       NEXT_PUBLIC_BASE_PATH: "",
       NEXT_PUBLIC_FEATURE_DUCKER_SIGN_IN: "true",
